@@ -3,6 +3,22 @@ using System.Threading;
 
 namespace SimpleThread
 {
+    public class WriteThread
+    {
+        private int _value;
+        private SimpleQ<int> _queue; 
+
+        public WriteThread(SimpleQ<int> queue)
+        {
+            _queue = queue;
+        }
+        public WriteThread(SimpleQ<int> queue, int value)
+        {
+            _queue = queue;
+            _value = value;
+        }
+    }
+
     public class SimpleClassThread
     {
         public void InstanceMethod()
