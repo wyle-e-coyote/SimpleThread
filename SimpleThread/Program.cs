@@ -8,22 +8,30 @@ namespace SimpleThread
         static void Main()
         {
             //var instance = new SimpleClassThread();
-            var instance = new ThreadWithState("Starting thread with value {0} in thread {1}", 42, ProgramCallback);
-            Console.WriteLine("Main thread {0} starting InstanceMethod.", Thread.CurrentThread.GetHashCode());
-            var thread0 = new Thread(instance.WorkerMethod);
-            thread0.Start();
+            //var instance = new ThreadWithState("Starting thread with value {0} in thread {1}", 42, ProgramCallback);
+            //Console.WriteLine("Main thread {0} starting InstanceMethod.", Thread.CurrentThread.GetHashCode());
+            //var thread0 = new Thread(instance.WorkerMethod);
+            //thread0.Start();
             
-            //Console.WriteLine("Main thread {0} starting StaticMethod.", Thread.CurrentThread.GetHashCode());
+            Console.WriteLine("Main thread {0} starting.", Thread.CurrentThread.GetHashCode());
 
-            var now = DateTime.Now;
+            //var now = DateTime.Now;
 
-            var mutableString = "This is a simple string.";
-            if (DateTime.Now > now)
-                mutableString += " This is a continuation of the string.";
+            //var mutableString = "This is a simple string.";
+            //if (DateTime.Now > now)
+            //    mutableString += " This is a continuation of the string.";
 
-            Console.WriteLine(mutableString);
+            //Console.WriteLine(mutableString);
 
-            var thread1 = new Thread(SimpleClassThread.StaticMethod);
+            //var thread1 = new Thread(SimpleClassThread.StaticMethod);
+            //thread1.Start();
+            var queue = new SimpleQ<int>();
+            var writer = new WriteThread(queue);
+            var reader = new ReadThread(queue);
+            var thread0 = new Thread(writer.StartWritting);
+            var thread1 = new Thread(reader.StartReading);
+
+            thread0.Start();
             thread1.Start();
 
             thread0.Join();

@@ -5,17 +5,89 @@ namespace SimpleThread
 {
     public class WriteThread
     {
-        private int _value;
+        //private int _value;
         private SimpleQ<int> _queue; 
 
         public WriteThread(SimpleQ<int> queue)
         {
             _queue = queue;
         }
-        public WriteThread(SimpleQ<int> queue, int value)
+
+        //public WriteThread(SimpleQ<int> queue, int value)
+        //{
+        //    _queue = queue;
+        //    _value = value;
+        //}
+
+        public void Commit(int value)
+        {
+            _queue.Enqueue(value);
+        }
+
+        public void StartWritting()
+        {
+            var rand = new Random();
+            var commit = rand.Next();
+            var loops = 10;
+            //var endTime = DateTime.Now.AddSeconds(5);
+
+            Console.WriteLine("Commencing write...");
+            //while (endTime > DateTime.Now)
+            while (loops != 0)
+            {
+                try
+                {
+                    Console.WriteLine("({0}) - Committing {1}", loops, commit);
+                    Commit(commit);
+                    Console.WriteLine("     Current queue: {0}", _queue.PrintAll());
+                    commit = rand.Next();
+                    loops--;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Caught write execption {0}", e.Message);
+                }
+            }
+        }
+    }
+
+    public class ReadThread
+    {
+        private SimpleQ<int> _queue;
+
+        public ReadThread(SimpleQ<int> queue)
         {
             _queue = queue;
-            _value = value;
+        }
+
+        public int Read()
+        {
+            return _queue.Dequeue();
+        }
+
+        public void StartReading()
+        {
+            //var endTime = DateTime.Now.AddSeconds(5);
+            var loops = 10;
+
+            Console.WriteLine("Commencing read...");
+            //while (endTime > DateTime.Now)
+            while (loops != 0)
+            {
+                try
+                {
+                    if (_queue.HasQueued())
+                    {
+                        var value = _queue.Dequeue();
+                        Console.WriteLine("({0}) Dequeued {1}", loops, value);
+                        loops--;
+                    }
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine("Caught read exception {0}", e.Message);
+                }
+            }
         }
     }
 

@@ -60,8 +60,43 @@ namespace SimpleThread
                 {
                     Monitor.Wait(_queue);
                 }
-
                 return _queue.Dequeue();
+            }
+            finally
+            {
+                Monitor.Exit(_queue);
+            }
+        }
+
+        public T Peek()
+        {
+            Monitor.Enter(_queue);
+            try
+            {
+                if (!Monitor.IsEntered(_queue))
+                {
+                    Monitor.Wait(_queue);
+                }
+                
+                return _queue.Count != 0 ? _queue.Peek() : default(T);
+            }
+            finally
+            {
+                Monitor.Exit(_queue);
+            }
+        }
+        
+        public bool HasQueued()
+        {
+            Monitor.Enter(_queue);
+            try
+            {
+                if (!Monitor.IsEntered(_queue))
+                {
+                    Monitor.Wait(_queue);
+                }
+
+                return _queue.Count != 0;
             }
             finally
             {
@@ -107,7 +142,7 @@ namespace SimpleThread
                 var output = new StringBuilder();
                 foreach (var elem in _queue)
                 {
-                    output.AppendLine(elem.ToString());
+                    output.AppendFormat("{0},", elem);
                 }
 
                 return output.ToString();
